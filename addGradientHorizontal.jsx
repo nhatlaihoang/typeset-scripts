@@ -1,13 +1,44 @@
 // Align Basic in ExtendScript (JSX)
 
-const isMac = $.os.toLowerCase().indexOf("mac") >= 0;
-const isWindows = $.os.toLowerCase().indexOf("windows") >= 0;
+//Get token file path
+function getTokenFilePath() {
+    var isMac = ($.os.indexOf("Mac") !== -1);
 
-const tokenFilePath = isMac
-    ? "~/Library/Application Support/Adobe/UXP/PluginsStorage/PHSP/25/Developer/ycommvn-typeset/PluginData/token.txt"
-    : "~/AppData/Roaming/Adobe/UXP/PluginsStorage/PHSP/25/Developer/ycommvn-typeset/PluginData/token.txt"; //mock file path
+    // Correct UXP PluginsStorage base path
+    var basePath = isMac
+        ? Folder("~/Library/Application Support/Adobe/UXP/PluginsStorage/PHSP")
+        : Folder(Folder.userData + "/Adobe/UXP/PluginsStorage/PHSP"); 
+        // Folder.userData resolves to ~/AppData/Roaming on Windows
 
+    // Different subpath for Mac vs Windows
+    var subPath = isMac
+        ? "/Developer/ycommvn-typeset/PluginData/token.txt"
+        : "/External/ycommvn-typeset/PluginData/token.txt";
+        
+    var baseFolder = Folder(basePath);
 
+    if (!baseFolder.exists) return null;
+
+    // Find subfolders that are only numbers (Photoshop major versions)
+    var versionFolders = baseFolder.getFiles(function(f) {
+        return f instanceof Folder && /^\d+$/.test(f.name);
+    });
+
+    // Sort by newest version first
+    versionFolders.sort(function(a, b) {
+        return parseInt(b.name, 10) - parseInt(a.name, 10);
+    });
+
+    // Check each version folder for token.txt
+    for (var i = 0; i < versionFolders.length; i++) {
+        var file = File(versionFolders[i].fsName + subPath);
+        if (file.exists) return file.fsName;
+    }
+
+    return null; // not found
+}
+
+const tokenFilePath = getTokenFilePath();
 const tokenFile = File(tokenFilePath);
 if (tokenFile.exists) {
         

@@ -189,8 +189,9 @@ if (tokenFile.exists) {
     };
 
     function selectOriginalLayer(originalLayerIndex) {
+        var modifiedOriginalLayerIndex = originalLayerIndex + 1;
         var ref = new ActionReference();
-        ref.putIndex(charIDToTypeID("Lyr "), originalLayerIndex);
+        ref.putIndex(charIDToTypeID("Lyr "), modifiedOriginalLayerIndex);
         var desc = new ActionDescriptor();
         desc.putReference(charIDToTypeID("null"), ref);
         desc.putBoolean(charIDToTypeID("MkVs"), false);

@@ -36,14 +36,13 @@ function getTokenFilePath() {
     }
 
     return null; // not found
-}
+};
 
 const tokenFilePath = getTokenFilePath();
 const tokenFile = File(tokenFilePath);
 if (tokenFile.exists) {
         
     // Add Gradient Horizontal (Foreground → Background)
-    #target photoshop;
 
     function addGradientVertical() {
         const doc = app.activeDocument;

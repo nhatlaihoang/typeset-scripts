@@ -1,5 +1,3 @@
-// Align Basic in ExtendScript (JSX)
-
 //Get token file path
 function getTokenFilePath() {
     var isMac = ($.os.indexOf("Mac") !== -1);
